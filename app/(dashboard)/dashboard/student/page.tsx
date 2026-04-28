@@ -11,6 +11,7 @@ import {
   Trophy,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { useAuth } from "@/components/providers/auth-provider";
 
 const courseAktif = [
   {
@@ -46,6 +47,7 @@ const progressTotal = 46;
 const streakHari = 5;
 
 export default function StudentDashboardPage() {
+  const { user, isLoading } = useAuth();
   const [absenDone, setAbsenDone] = useState(false);
   const [absenLoading, setAbsenLoading] = useState(false);
 
@@ -95,11 +97,13 @@ export default function StudentDashboardPage() {
       <header className="mb-6">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">Halo, Andi 👋</h1>
+            <h1 className="text-2xl font-bold tracking-tight">
+              {isLoading ? "Halo..." : `Halo, ${user?.name ?? "Siswa"} 👋`}
+            </h1>
             <p className="mt-1 text-sm text-stone-500">Siap belajar hari ini?</p>
           </div>
           <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#d7ccc8] text-sm font-bold text-stone-900">
-            A
+            {isLoading ? "..." : (user?.name?.charAt(0).toUpperCase() ?? "S")}
           </span>
         </div>
 
