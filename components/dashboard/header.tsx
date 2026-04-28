@@ -1,31 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useAuth } from "@/components/providers/auth-provider";
 
 export function Header() {
-  const [role, setRole] = useState<string | null>(null);
-
-  useEffect(() => {
-    const loadMe = async () => {
-      try {
-        const response = await fetch("/api/auth/me");
-        const result = (await response.json()) as { user?: { role?: string } };
-        setRole(result.user?.role ?? null);
-      } catch {
-        setRole(null);
-      }
-    };
-
-    void loadMe();
-  }, []);
+  const { user } = useAuth();
 
   return (
     <header className="sticky top-0 z-10 border-b border-zinc-200 bg-white/90 px-4 py-4 backdrop-blur md:px-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Learning Management System</p>
-          <p className="text-sm text-zinc-700">Dashboard Panel</p>
+          <p className="text-sm text-zinc-700">
+            {user ? `Halo, ${user.name}` : "Dashboard Panel"}
+          </p>
         </div>
 
         <div className="flex items-center gap-2">
@@ -36,7 +24,7 @@ export function Header() {
             Home
           </Link>
           <span className="rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-semibold uppercase text-white">
-            {role ?? "guest"}
+            {user?.role ?? "guest"}
           </span>
         </div>
       </div>
