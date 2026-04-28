@@ -1,0 +1,87 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  admin
+  teacher
+  student
+}
+
+enum PaymentStatus {
+  pending
+  paid
+  failed
+}
+
+model User {
+  id          String       @id @default(uuid())
+  name        String
+  email       String       @unique
+  password    String
+  role        Role
+  courses     Course[]     @relation("CourseTeacher")
+  enrollments Enrollment[]
+  attendances Attendance[]
+  payments    Payment[]
+}
+
+model Course {
+  id          String       @id @default(uuid())
+  title       String
+  description String
+  price       Decimal      @db.Decimal(10, 2)
+  teacherId   String
+  teacher     User         @relation("CourseTeacher", fields: [teacherId], references: [id], onDelete: Cascade)
+  enrollments Enrollment[]
+  attendances Attendance[]
+  quizzes     Quiz[]
+}
+
+model Enrollment {
+  id       String @id @default(uuid())
+  userId   String
+  courseId String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+}
+
+model Attendance {
+  id        String   @id @default(uuid())
+  userId    String
+  courseId  String
+  imageUrl  String
+  latitude  Float
+  longitude Float
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+}
+
+model Quiz {
+  id       String @id @default(uuid())
+  courseId String
+  title    String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+}
+
+model Payment {
+  id     String        @id @default(uuid())
+  userId String
+  amount Decimal       @db.Decimal(10, 2)
+  status PaymentStatus
+  user   User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
