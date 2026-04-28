@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/components/providers/auth-provider";
+import { ProfileDropdown } from "@/components/dashboard/profile-dropdown";
 
 const courseAktif = [
   {
@@ -102,9 +103,7 @@ export default function StudentDashboardPage() {
             </h1>
             <p className="mt-1 text-sm text-stone-500">Siap belajar hari ini?</p>
           </div>
-          <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#d7ccc8] text-sm font-bold text-stone-900">
-            {isLoading ? "..." : (user?.name?.charAt(0).toUpperCase() ?? "S")}
-          </span>
+          <ProfileDropdown />
         </div>
 
         {/* Progress & Streak */}

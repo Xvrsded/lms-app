@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useAuth } from "@/components/providers/auth-provider";
+import { ProfileDropdown } from "@/components/dashboard/profile-dropdown";
 
 export function Header() {
   const { user } = useAuth();
@@ -23,9 +24,7 @@ export function Header() {
           >
             Home
           </Link>
-          <span className="rounded-md bg-zinc-900 px-2.5 py-1 text-xs font-semibold uppercase text-white">
-            {user?.role ?? "guest"}
-          </span>
+          <ProfileDropdown />
         </div>
       </div>
     </header>
